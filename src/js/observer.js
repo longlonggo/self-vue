@@ -1,22 +1,44 @@
 function Observer(data) {
     this.data = data;
+    this.walk(data);
 }
 
-Object.prototype = {
+Observer.prototype = {
     walk: function (data) {
         Object.keys(data).forEach(function (key) {
             this.defineReactive(data, key, data[key]);
         }.bind(this));
     },
     defineReactive: function (data, key, val) {
+        var dep = new Dep();
+        var childObj = observe(val);
 
+        Object.defineProperty(data, key, {
+            enumerable: true,
+            configurable: true,
+            get: function getter() {
+                if (Dep.target) {
+                    dep.addSub(Dep.target);
+                };
+                return val;
+            },
+            set: function setter(newVal) {
+                console.log(val)
+                if (newVal === val) {
+                    return
+                };
+
+                val = newVal;
+                dep.notify();
+            }
+        })
     }
 }
 
 function observe(value, vm) {
-    if (isObject(value)) {
+    if (!isObject(value)) {
         return;
-    }
+    };
     return new Observer(value);
 }
 

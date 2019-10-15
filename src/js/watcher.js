@@ -1,4 +1,4 @@
-function Watcher(vm, exp, cd) {
+function Watcher(vm, exp, cb) {
     this.vm = vm;
     this.cb = cb;
     this.exp = exp;

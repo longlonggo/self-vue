@@ -102,7 +102,8 @@ Compile.prototype = {
     },
     isElementNode: function (node) {
         return node.nodeType === 1;
-    }, isTextNode: function (node) {
+    }, 
+    isTextNode: function (node) {
         return node.nodeType === 3;
     }
 }
