@@ -1,4 +1,7 @@
-function Observer(data) {
+import { isObject } from './utils';
+import { Dep } from './dep';
+
+export function Observer(data) {
     this.data = data;
     this.walk(data);
 }
@@ -35,7 +38,7 @@ Observer.prototype = {
     }
 }
 
-function observe(value, vm) {
+export function observe(value, vm) {
     if (!isObject(value)) {
         return;
     };

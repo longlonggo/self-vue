@@ -1,4 +1,6 @@
-function Watcher(vm, exp, cb) {
+import {Dep} from './dep';
+
+export function Watcher(vm, exp, cb) {
     this.vm = vm;
     this.cb = cb;
     this.exp = exp;
@@ -15,7 +17,7 @@ Watcher.prototype = {
         if (value !== oldValue) {
             this.value = value;
             this.cb.call(this.vm, value, oldValue);
-        }
+        };
     },
     get: function () {
         Dep.target = this;

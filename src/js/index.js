@@ -1,4 +1,8 @@
-function SelfVue(options) {
+import { observe } from "./observer";
+import { Compile } from "./compile";
+
+
+export function MiniVue(options) {
     this.data = options.data;
     this.methods = options.methods;
 
@@ -11,7 +15,7 @@ function SelfVue(options) {
     options.mounted.call(this);
 }
 
-SelfVue.prototype = {
+MiniVue.prototype = {
     proxyKeys: function (key) {
         Object.defineProperty(this, key, {
             enumerable: false,

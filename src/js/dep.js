@@ -1,4 +1,4 @@
-function Dep() {
+export function Dep() {
     this.subs = [];
 }
 
@@ -13,4 +13,4 @@ Dep.prototype = {
     }
 }
 
-Dep.target = null
+Dep.target = null;
