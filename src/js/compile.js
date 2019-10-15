@@ -15,7 +15,7 @@ Compile.prototype = {
             console.warn("Dom元素不存在");
         }
     },
-    nodeToFragment: function el() {
+    nodeToFragment: function (el) {
         var fragment = document.createDocumentFragment();
         var child = el.firstChild;
         while (child) {
@@ -49,7 +49,7 @@ Compile.prototype = {
                 var exp = attr.value;
                 var dir = attrName.substring(2);
                 if (this.isEventDirective(dir)) {
-                    this.compileEvnet(node, this.vm, exp, dir);
+                    this.compileEvent(node, this.vm, exp, dir);
                 } else {
                     this.compileModel(node, this.vm, exp, dir);
                 }
@@ -64,7 +64,7 @@ Compile.prototype = {
             this.updateText(node, value);
         }.bind(this));
     },
-    compileEvnet: function (node, vm, exp, dir) {
+    compileEvent: function (node, vm, exp, dir) {
         var eventType = dir.split(':')[1];
         var cb = vm.methods && vm.methods[exp];
 
