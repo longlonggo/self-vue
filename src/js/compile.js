@@ -1,4 +1,4 @@
-import {Watcher } from './watcher'
+import { Watcher } from './watcher'
 export function Compile(el, vm) {
     this.vm = vm;
     this.el = document.querySelector(el);
@@ -103,7 +103,7 @@ Compile.prototype = {
     },
     isElementNode: function (node) {
         return node.nodeType === 1;
-    }, 
+    },
     isTextNode: function (node) {
         return node.nodeType === 3;
     }
