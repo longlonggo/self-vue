@@ -32,5 +32,14 @@ export function setVmVal(vm, expr, value) {
     for (var index = 0, len = segments.length - 1; index < len; index++) {
         data = data[segments[index]];
     }
-    data[segments[index]]=value;
+    data[segments[index]] = value;
+}
+
+export function toggleHide(node, className, flag) {
+    if (flag) {
+        className = className.replace(/hide/g, '')
+    } else if (className.indexOf('hide') === -1) {
+        className += ' hide';
+    }
+    node.className = className.trim();
 }

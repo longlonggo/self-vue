@@ -1,5 +1,5 @@
 import { Watcher } from '../watcher';
-import { getVmVal, setVmVal } from '../util/index';
+import { getVmVal, setVmVal, toggleHide } from '../util/index';
 
 export default {
     text: function (node, vm, expr) {
@@ -14,8 +14,13 @@ export default {
             node.innerHTML = newVal;
         })
     },
-    show: function () {
-
+    show: function (node, vm, expr) {
+        var flag = getVmVal(vm, expr);
+        toggleHide(node,node.className,flag);
+        
+        new Watcher(vm, expr, function (flag) {
+            toggleHide(node,node.className,flag);
+        })
     },
     if: function () {
 
