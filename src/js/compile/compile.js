@@ -34,30 +34,27 @@ function compileElement(node, vm) {
 };
 
 function compileText(node, vm) {
-    var txt = node.textContent;
-    var text = txt;
-    if (/{{\s*\S+\s*}}/.test(txt)) {
-        var txtArr = txt.match(/{{[^{}]*}}|[^{}]+/g);
-        for (var i in txtArr) {
-            var txtSource = txtArr[i].match(/({{\s*)([^{}\s]*)(\s*}})/);
-            if (txtSource) {
-                var reg = txtSource[0];
-                var expr = txtSource[2];
-                txt = txt.replace(reg, getVmVal(vm, expr));
-                node.textContent = txt;
-                new Watcher(vm, expr, function (newVal, oldVal, reg, temp) {
-                    // if (!temp.txt) {
-                    //     temp.txt = text.replace(reg, newVal);
-                    // }else{
-                    //     temp.txt = temp.txt.replace(reg, newVal);
-                    // }
-                    // console.log(temp.txt)
-                    console.log(temp)
-                    // console.log(temp.txt)
-                    // node.textContent = temp.txt;
-                }, reg)
+    var text = node.textContent;
+    node.oldValArr = [];
+    node.newValArr = [];
+    if (/{{\s*\S+\s*}}/.test(text)) {
+        var textArr = text.match(/{{[^{}]*}}|[^{}]+/g);
+        for (var i in textArr) {
+            var textSource = textArr[i].match(/({{\s*)([^{}\s]*)(\s*}})/);
+            if (textSource) {
+                var reg = textSource[0];
+                var expr = textSource[2];
+
+                new Watcher(vm, expr, function (newVal, oldVal, index) {
+                    node.newValArr[index] = newVal;
+                    replaceMustacheVal(node, text);
+                }, node.newValArr.length);
+
+                node.oldValArr.push(reg);
+                node.newValArr.push(getVmVal(vm, expr));
             }
         }
+        replaceMustacheVal(node, text);
     }
 };
 
@@ -74,3 +71,11 @@ export function compile(node, vm) {
     }.bind(this));
 }
 
+
+
+function replaceMustacheVal(node, text) {
+    node.oldValArr.forEach(function (oldVal,i) { 
+        text = text.replace(oldVal, node.newValArr[i]);
+     });
+    node.textContent = text;
+}

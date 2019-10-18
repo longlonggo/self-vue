@@ -2,7 +2,6 @@ import { remove } from './util/index';
 
 export function Dep() {
     this.subs = [];
-    this.temp={txt:null};
 }
 
 Dep.prototype = {
@@ -14,9 +13,8 @@ Dep.prototype = {
     },
     notify: function () {
         this.subs.forEach(function (sub) {
-            sub.update(this.temp);
+            sub.update();
         }.bind(this))
-        this.temp.txt=null;
     }
 }
 

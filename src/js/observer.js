@@ -13,7 +13,9 @@ Observer.prototype = {
         }.bind(this));
     },
     defineReactive: function (data, key, val) {
+
         var dep = new Dep();
+
         var childObj = observe(val);
 
         Object.defineProperty(data, key, {
@@ -29,7 +31,6 @@ Observer.prototype = {
                 if (newVal === val) {
                     return
                 };
-
                 val = newVal;
                 dep.notify();
             }
