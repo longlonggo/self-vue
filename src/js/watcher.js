@@ -1,10 +1,11 @@
 import { Dep } from './dep';
 import { getVmVal, getData, parsePath, getUUID } from './util/index';
 
-export function Watcher(vm, expr, cb, valIndex) {
+
+export function Watcher(vm, expr, cb, UUID) {
     this.vm = vm;
     this.cb = cb;
-    this.valIndex = valIndex;
+    this.UUID = UUID || getUUID();
     this.expr = parsePath(expr).join('.');
     this.value = this.get();
 }
@@ -19,7 +20,7 @@ Watcher.prototype = {
         var value = getVmVal(this.vm, this.expr);
         if (value !== oldVal) {
             this.value = value;
-            this.cb.call(this.vm, value, oldVal, this.valIndex);
+            this.cb.call(this.vm, value, oldVal, this.UUID);
         };
     },
     get: function () {

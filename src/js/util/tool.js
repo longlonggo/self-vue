@@ -43,6 +43,6 @@ export function remove(arr, item) {
 };
 
 
-export function getUUID(index) {
-    return Number(Math.random().toString().substr(3, 5) + index + + Date.now()).toString(36);
+export function getUUID() {
+    return Number(Math.random().toString().substr(3, 5) + Date.now()).toString(36);
 };

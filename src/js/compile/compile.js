@@ -1,5 +1,5 @@
 import { Watcher } from '../watcher';
-import { isDirective, isEventDirective, getVmVal } from '../util/index';
+import { isDirective, isEventDirective, getVmVal, getUUID } from '../util/index';
 import directive from './directive';
 
 var compileNodeType = {
@@ -12,7 +12,6 @@ function compileElement(node, vm) {
     var attributes = node.attributes;
     [].slice.call(attributes).forEach(function (attr) {
         var attrName = attr.name;
-
         if (isDirective(attrName)) {
             var attrNameSegments = attrName.match(/(v-)(\S[^:]*)(:?)([^:]*)/)
             var type = attrNameSegments[2];
@@ -21,8 +20,9 @@ function compileElement(node, vm) {
 
             if (directive[type]) {
                 directive[type](node, vm, expr, key);
+                node.removeAttribute(attr.name);
             } else {
-                throw Error("指令不存在");
+                console.error(attrName + ("指令不存在"))
             }
         }
     })
@@ -35,8 +35,8 @@ function compileElement(node, vm) {
 
 function compileText(node, vm) {
     var text = node.textContent;
-    node.oldValArr = [];
-    node.newValArr = [];
+    node.oldValSet = {};
+    node.newValSet = {};
     if (/{{\s*\S+\s*}}/.test(text)) {
         var textArr = text.match(/{{[^{}]*}}|[^{}]+/g);
         for (var i in textArr) {
@@ -44,14 +44,14 @@ function compileText(node, vm) {
             if (textSource) {
                 var reg = textSource[0];
                 var expr = textSource[2];
+                var UUID = getUUID();
+                new Watcher(vm, expr, function (newVal, oldVal, UUID) {
+                    node.newValSet[UUID] = newVal;
+                    replaceMustacheVal(node, text, UUID);
+                }, UUID);
 
-                new Watcher(vm, expr, function (newVal, oldVal, index) {
-                    node.newValArr[index] = newVal;
-                    replaceMustacheVal(node, text);
-                }, node.newValArr.length);
-
-                node.oldValArr.push(reg);
-                node.newValArr.push(getVmVal(vm, expr));
+                node.oldValSet[UUID] = reg;
+                node.newValSet[UUID] = getVmVal(vm, expr);
             }
         }
         replaceMustacheVal(node, text);
@@ -74,8 +74,9 @@ export function compile(node, vm) {
 
 
 function replaceMustacheVal(node, text) {
-    node.oldValArr.forEach(function (oldVal,i) { 
-        text = text.replace(oldVal, node.newValArr[i]);
-     });
+    for (var UUID in node.newValSet) {
+        text = text.replace(node.oldValSet[UUID], node.newValSet[UUID]);
+    }
+
     node.textContent = text;
 }
