@@ -1,5 +1,5 @@
 import { Watcher } from '../watcher';
-import { getVmVal, setVmVal, toggleHide } from '../util/index';
+import { getVmVal, setVmVal, toggleHide, toggleRender } from '../util/index';
 
 export default {
     text: function (node, vm, expr) {
@@ -17,13 +17,17 @@ export default {
     show: function (node, vm, expr) {
         var flag = getVmVal(vm, expr);
         toggleHide(node,node.className,flag);
-        
+
         new Watcher(vm, expr, function (flag) {
             toggleHide(node,node.className,flag);
         })
     },
-    if: function () {
+    if: function (node, vm, expr) {
+        var flag = getVmVal(vm, expr);
 
+        new Watcher(vm, expr, function (flag) {
+
+        });
     },
     else: function () {
 
@@ -31,8 +35,8 @@ export default {
     "else-if": function () {
 
     },
-    for: function () {
-
+    for: function (node, vm, expr) {
+        
     },
     on: function (node, vm, expr, eventType) {
         var fn = vm.$methods && vm.$methods[expr];
@@ -41,13 +45,11 @@ export default {
         }
 
         node.addEventListener(eventType, fn.bind(vm));
-
     },
     bind: function (node, vm, expr, attr) {
 
     },
     model: function (node, vm, expr) {
-
         var value = getVmVal(vm, expr);
         node.value = value;
         node.addEventListener('input', function () {
