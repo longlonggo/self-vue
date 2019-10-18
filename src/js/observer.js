@@ -1,4 +1,4 @@
-import { isObject } from './utils';
+import { isObject } from './util/index';
 import { Dep } from './dep';
 
 export function Observer(data) {
@@ -26,7 +26,6 @@ Observer.prototype = {
                 return val;
             },
             set: function setter(newVal) {
-                console.log(val)
                 if (newVal === val) {
                     return
                 };
